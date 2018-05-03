@@ -1,0 +1,42 @@
+{
+  "name": "cc",
+  "version": "0.0.1",
+  "description": "gulp",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=dev gulp",
+    "dist": "npm run dist1 && npm run dist2 && npm run dist3",
+    "dist1": "cross-env NODE_ENV=dist_1 gulp",
+    "dist2": "cross-env NODE_ENV=dist_2 gulp",
+    "dist3": "cross-env NODE_ENV=dist_3 gulp",
+    "help": "cross-env NODE_ENV=help gulp",
+    "one": "cross-env NODE_ENV=one gulp",
+    "test": "cross-env NODE_ENV=test gulp"
+  },
+  "author": "cc",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "^6.24.1",
+    "browser-sync": "^2.17.5",
+    "cross-env": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-babel": "^7.0.1",
+    "gulp-changed": "^3.2.0",
+    "gulp-cssnano": "^2.1.2",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-imagemin": "^4.1.0",
+    "gulp-less": "^3.3.0",
+    "gulp-plumber": "^1.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglify": "^2.1.2",
+    "imagemin-pngquant": "^5.1.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "fs-extra": "^2.1.2"
+  }
+}
