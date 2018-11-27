@@ -40,15 +40,25 @@ nodemon({
 
 * browserSync代理服务器，到底是提供什么方法了？就是根据gulp前端的文件，而进行reload功能。
 
-##### 3.总结
+### 总结
 
 * 服务器：启动express的服务,express提供static和api服务
 * nodemon（配置排除webapp和src_webapp），就是监听后台的代码，重启。
 * browserSync拿到服务器的reload，成为代理服务器。
 * gulp监听src_webapp，让browserSync可reload
 
-##### 4.其他
+### 其他
 
 * browserSync：可拿到JAVA启动的服务的reload，成为代理服务器。
 * gulp监听前端代码，使browserSync代理服务器可执行reload。
 * 不用后台JAVA写专门的代码配置跨域。
+* 若后台的服务只是自己启动，不想通过nodemon进行，也就是不想后台的代码被nodemon监听和重启。gulpfile.js应该把[node关闭]，在命令行设置启动 node 服务。
+
+```
+  "scripts": {
+    "dev": "cross-env NODE_ENV=dev node ./api_server/app.js && gulp",
+  },
+```
+
+
+

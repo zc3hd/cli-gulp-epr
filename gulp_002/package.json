@@ -4,8 +4,7 @@
   "description": "gulp",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=dev gulp",
-    "dist": "npm run dist1 && npm run dist2 && npm run dist3",
+    "dev": "cross-env NODE_ENV=dev node ./api_server/app.js && gulp",
     "exp": "node ./api_server/app.js"
   },
   "author": "cc",
