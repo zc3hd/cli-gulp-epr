@@ -1,17 +1,18 @@
 
-### gulp+node 前后实时编译
+# step 2
+### gulp+express
 
-* 这个版本适合前端使用gulp进行监听文件变化，后台用node提供API。都是由一个人做。
-* 涉及到监听node服务的包：nodemon
-* 启动后台服务后，可以用browserSync代理监听node启动的服务，参与gulp编码后的浏览器的reload
+* 这个版本适合前端使用gulp进行监听文件变化，后台用node提供API和static。一人开发。
+* 监听express服务：nodemon
+* 启动后台服务后，用browserSync代理express启动的服务，参与gulp编码后的浏览器的reload
 
-### gulp第1个任务
+##### 1.gulp第1个任务
 
-* nodemon可以执行我写的express服务。里面写提供静态服务的api服务
-* nodemon能监视目录下的所有文件，看下面的配置项，去除静态文件的两个，其他都会监听，有变化就会重新启动我的express的app.js
-* 需要好好看看var nodemon = require('gulp-nodemon');
+* nodemon可执行express的服务,express提供static和api服务
+* nodemon能监视目录下的所有文件，去除static文件的（webapp、src_webapp），其他都会监听，有变化就会重新启动我的express的服务。
 
 ```
+var nodemon = require('gulp-nodemon');
 nodemon({
     script: './api_server/app.js',
     ignore : [
@@ -22,9 +23,10 @@ nodemon({
   });
 ```
 
-### gulp第2个任务
+##### 2.gulp第2个任务
 
-* 启动本地的代理服务器，啥是代理服务器，就是在3000的启动的服务，在4000完全可以访问
+* 在4000端口启动代理服务器，代理3000
+* 在4000端口的静态页面的API和static请求，可访问到3000端口
 
 ```
   browserSync.init({
@@ -36,19 +38,17 @@ nodemon({
   });
 ```
 
-* 这个代理服务器，可以根据gulp压缩的流进行自动重启界面。
-* 所以就是实现了：
+* browserSync代理服务器，到底是提供什么方法了？就是根据gulp前端的文件，而进行reload功能。
 
-```
-1.真实服务器提供API，和静态资源
-2.nodemon 监听真实服务器，以进行重启
+##### 3.总结
 
-3.代理服务器==真实服务器
-4.gulp针对功能模块的监听，静态页面进行重载，代理服务器进行reload
-```
+* 服务器：启动express的服务,express提供static和api服务
+* nodemon（配置排除webapp和src_webapp），就是监听后台的代码，重启。
+* browserSync拿到服务器的reload，成为代理服务器。
+* gulp监听src_webapp，让browserSync可reload
 
-* 需要学习browserSync
+##### 4.其他
 
-### browserSync
-
-* 其实browserSync就是可以监听后台的起服务的端口，那么这个工具也可以用于后台JAVA启动的服务后，前端进行端口代理，然后进行前端代码的编译，相当于在JAVA起服务后的端口上进行请求。不用后台JAVA写专门的代码。
+* browserSync：可拿到JAVA启动的服务的reload，成为代理服务器。
+* gulp监听前端代码，使browserSync代理服务器可执行reload。
+* 不用后台JAVA写专门的代码配置跨域。

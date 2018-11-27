@@ -1,10 +1,11 @@
-/*
-本人配合项目目录结构完成的自动开发工具
-master分支--开发的是把指定目录下的JS合并压缩为一个JS文件。
-
-现在在dev分支上--把指定目录下的JS，按照原有的路径的进行分别压缩。
-*/
 'use strict';
+var one = './src_webapp/demo_test/';
+
+
+
+
+
+
 var path = require('path');
 var gulp = require('gulp');
 var fs = require('fs-extra');
@@ -46,13 +47,12 @@ var env = process.env.NODE_ENV;
 var opts = {
   // 真是的工作目录，
   // dist: './../../../../../../../047-company_eclipse/workspace/cors-mot/src/main/webapp/',
-  dist: 'dist_webapp',
+  dist: 'webapp',
   // 要src的文件夹名字
   src: 'src_webapp',
   // 编译一个功能模块路径
-  one: './src_webapp/module_v1/cors/map_main/index.html',
+  one: one,
 };
-
 
 
 var arr = opts.one.split('/');

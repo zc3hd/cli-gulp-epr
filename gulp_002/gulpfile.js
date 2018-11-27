@@ -1,5 +1,5 @@
 'use strict';
-var one = './src_webapp/demo_10/';
+var one = './src_webapp/modules/js_demo/';
 
 
 
@@ -103,7 +103,7 @@ gulp.task('serve', ['node'], function() {
     browser: 'chrome',
     notify: false,
     //这个是browserSync对http://localhost:3000实现的代理端口
-    port: 4001
+    port: 4000
   });
 
 
@@ -181,7 +181,6 @@ gulp.task('less', function() {
     .pipe(reload({
       stream: true
     })));
-
 
 });
 
