@@ -1,8 +1,8 @@
 var express = require('express');
 var path = require('path');
+var conf = require('../conf.js');
 
 var app = express();
-
 app.use(express.static(path.join(__dirname, '../webapp/')));
 
 // api
@@ -19,4 +19,5 @@ app.post('/api/js_demo/font.do', function(req, res) {
   });
 });
 
-app.listen(3000);
+app.listen(conf.api_port);
+console.log("server running at " + conf.api_port);

@@ -52,13 +52,32 @@ nodemon({
 * browserSync：可拿到JAVA启动的服务的reload，成为代理服务器。
 * gulp监听前端代码，使browserSync代理服务器可执行reload。
 * 不用后台JAVA写专门的代码配置跨域。
-* 若后台的服务只是自己启动，不想通过nodemon进行，也就是不想后台的代码被nodemon监听和重启。gulpfile.js应该把[node关闭]，在命令行设置启动 node 服务。
+* 若后台的服务只是自己启动，不想通过nodemon进行，不想后台的代码被nodemon监听和重启。gulpfile.js应该把[node关闭]，在CMD单独执行 node 服务。
 
+---------------------------
+
+* 全局配置：
+```
+module.exports = {
+  // 数据库名称
+  db:"test",
+
+  // 测试模式下的端口
+  dev_port:1011,
+
+  // 打包后/测试时被代理的端口
+  api_port:1010,
+}
+```
+
+----------------------------
+
+* 下面这样写是不对的，因为node ./api_server/app.js就是开启服务了，不会执行完成的。除非断开。同样gulp也是开启一个服务，不会执行完成的。所以不能这样写，还是各开启个的CMD吧
 ```
   "scripts": {
     "dev": "cross-env NODE_ENV=dev node ./api_server/app.js && gulp",
   },
 ```
 
-* 更正：上面这样写是不对的，因为node ./api_server/app.js就是开启服务了，不会执行完成的。除非断开。同样gulp也是开启一个服务，不会执行完成的。所以不能这样写，还是各开启个的CMD吧
+
 
