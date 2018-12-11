@@ -1,5 +1,6 @@
 
 # step 2
+
 ### gulp+express
 
 * 这个版本适合前端使用gulp进行监听文件变化，后台用node提供API和static。一人开发。
