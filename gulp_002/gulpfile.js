@@ -31,7 +31,7 @@ var opts = {
 
 
 
-
+// *****************************************************依赖包
 
 var path = require('path');
 var gulp = require('gulp');
@@ -39,10 +39,16 @@ var fs = require('fs-extra');
 
 // 全局配置
 var conf = require('./conf.js');
-var nodemon = require('gulp-nodemon');
+
+// 开发环境
+var env = process.env.NODE_ENV;
+
+
 // 服务器
 var browserSync = require('browser-sync').create();
-var reload = browserSync.reload;
+var reload = browserSync.reload;.
+// 后台服务器重启
+var nodemon = require('gulp-nodemon');
 
 // html
 var htmlmin = require('gulp-htmlmin');
@@ -54,8 +60,10 @@ var cssnano = require('gulp-cssnano');
 var less = require('gulp-less');
 var autoprefixer = require('gulp-autoprefixer');
 // img
-var imagemin = require('gulp-imagemin'), // 图片压缩
-  pngquant = require('imagemin-pngquant'); // 深度压缩 
+// 图片压缩
+var imagemin = require('gulp-imagemin');
+// 深度压缩 
+var pngquant = require('imagemin-pngquant');
 
 
 // 错误阻止
@@ -67,9 +75,7 @@ var sourcemaps = require('gulp-sourcemaps');
 // 只更新修改过的文件
 var changed = require('gulp-changed');
 
-
-// 开发环境key
-var env = process.env.NODE_ENV;
+// *****************************************************依赖包
 
 
 
@@ -118,11 +124,12 @@ gulp.task("node", function() {
 
   nodemon({
     script: './api_server/app.js',
-    ignore : [
+    ignore: [
       "./src_webapp/",
       "./webapp/",
+      "./gulpfile.js",
     ],
-    env: { 'NODE_ENV': 'development'}  
+    env: { 'NODE_ENV': 'development' }  
   });
 });
 

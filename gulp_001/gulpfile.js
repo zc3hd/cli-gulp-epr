@@ -70,7 +70,7 @@ var server_opts = {
   notify: false,
   server: path.resolve(__dirname, opts.dist),
   index: './index.html',
-  port: 1234,
+  port: 1010,
   logConnections: true
 };
 
