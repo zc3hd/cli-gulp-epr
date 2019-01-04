@@ -7,10 +7,11 @@
 * 监听express服务：nodemon
 * 启动后台服务后，用browserSync代理express启动的服务，参与gulp编码后的浏览器的reload
 
-##### 1.gulp第1个任务
+##### 1.npm run api
 
 * nodemon可执行express的服务,express提供static和api服务
 * nodemon能监视目录下的所有文件，去除static文件的（webapp、src_webapp），其他都会监听，有变化就会重新启动我的express的服务。
+* nodemon启动的服务有API和static
 
 ```
 var nodemon = require('gulp-nodemon');
@@ -26,20 +27,19 @@ nodemon({
 
 ##### 2.gulp第2个任务
 
-* 在4000端口启动代理服务器，代理3000
-* 在4000端口的静态页面的API和static请求，可访问到3000端口
+* 在1011端口启动真实的后台API和static，代理端口为1010
 
 ```
   browserSync.init({
-    proxy: 'http://localhost:3000',
+    proxy: 'http://localhost:1011',
     browser: 'chrome',
     notify: false,
-    //这个是browserSync对http://localhost:3000实现的代理端口
-    port: 4001
+    //这个是browserSync对http://localhost:1011实现的代理端口
+    port: 1010
   });
 ```
 
-* browserSync代理服务器，到底是提供什么方法了？就是根据gulp前端的文件，而进行reload功能。
+* browserSync代理服务器，提供reload进行重启功能。
 
 ### 总结
 
@@ -73,12 +73,18 @@ module.exports = {
 
 ----------------------------
 
-* 下面这样写是不对的，因为node ./api_server/app.js就是开启服务了，不会执行完成的。除非断开。同样gulp也是开启一个服务，不会执行完成的。所以不能这样写，还是各开启个的CMD吧
+* 下面这样写是不对，因为node ./api_server/app.js就是开启服务了，不会执行完成的。除非断开。同样gulp也是开启一个服务，不会执行完成的。所以不能这样写，还是各开启个的CMD吧
 ```
   "scripts": {
     "dev": "cross-env NODE_ENV=dev node ./api_server/app.js && gulp",
   },
 ```
 
+--------------------------------------
 
+#### 2019.1.4优化：
 
+```
+1.把后台的监控和前端的监控分开，形成npm run api/npm run dev
+2.因为gulp负责监听src_webpack文件从而使browserSync代理的页面进行reload。那么npm run dev就没有启动自己的static服务器。所以gulp这个template另外需要判断测试接口有没有通，然后决定启动代理服务器还是自己的静态服务器；
+```

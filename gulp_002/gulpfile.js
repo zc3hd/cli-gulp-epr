@@ -46,7 +46,7 @@ var env = process.env.NODE_ENV;
 
 // 服务器
 var browserSync = require('browser-sync').create();
-var reload = browserSync.reload;.
+var reload = browserSync.reload;
 // 后台服务器重启
 var nodemon = require('gulp-nodemon');
 
@@ -92,19 +92,10 @@ opts.one_dist = arr.join('/');
 
 
 
-var index = 0;
-// 静态服务器 + 监听 html,css 文件
-gulp.task('serve', ['node'], function() {
 
 
-  // 启动代理服务器。
-  browserSync.init({
-    proxy: 'http://localhost:' + conf.api_port,
-    browser: 'chrome',
-    notify: false,
-    //这个是browserSync对http://localhost:3000实现的代理端口
-    port: conf.dev_port
-  });
+// 启动代理/静态服务器 监听src_webpack文件
+gulp.task('serve', ['bs'], function() {
 
 
   // 监听 html
@@ -118,20 +109,55 @@ gulp.task('serve', ['node'], function() {
 });
 
 
+// 启动代理/静态服务器 
 
-// 监听node的服务。
-gulp.task("node", function() {
+var http = require("http");
+gulp.task('bs', function() {
 
-  nodemon({
-    script: './api_server/app.js',
-    ignore: [
-      "./src_webapp/",
-      "./webapp/",
-      "./gulpfile.js",
-    ],
-    env: { 'NODE_ENV': 'development' }  
-  });
+  var opt = {
+    host: 'localhost',
+    port: conf.api_port,
+    method: 'POST',
+    path: conf.test_api,
+    headers: {
+      "Content-Type": 'application/json',
+    }
+  };
+
+
+  var body = '';
+  // api成功开启
+  var req = http.request(opt, function(res) {
+      if (res.statusCode == 200) {
+        // browserSync启动代理服务器
+        browserSync.init({
+          // 代理端口
+          proxy: 'http://localhost:' + conf.api_port,
+          browser: 'chrome',
+          notify: false,
+          //代理端口
+          port: conf.dev_port
+        });
+        console.log('browserSync启动--->代理服务');
+      }
+    })
+    // api 服务没有开启,
+    .on('error', function(e) {
+      // browserSync启动静态服务器
+      browserSync.init({
+        notify: false,
+        server: path.resolve(__dirname, opts.dist),
+        index: './index.html',
+        port: conf.dev_port,
+        logConnections: true
+      });
+      console.log('browserSync启动--->静态服务');
+    });
+  req.end();
+
 });
+
+
 
 
 // html

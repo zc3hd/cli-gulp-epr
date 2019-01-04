@@ -4,8 +4,8 @@
   "description": "gulp",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=dev node ./api_server/app.js && gulp",
-    "exp": "node ./api_server/app.js"
+    "dev": "set NODE_ENV=dev&&gulp",
+    "api": "set NODE_ENV=api&&node ./api_server/app_auto.js"
   },
   "author": "cc",
   "license": "ISC",
