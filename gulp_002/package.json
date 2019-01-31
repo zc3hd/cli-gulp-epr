@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "set NODE_ENV=dev&&gulp",
-    "api": "set NODE_ENV=api&&node ./api_server/app_auto.js"
+    "api": "set NODE_ENV=api&&node ./api_server/app_auto.js",
+    "git": "set NODE_ENV=git&&node ./cmd.js"
   },
   "author": "cc",
   "license": "ISC",

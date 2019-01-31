@@ -11,7 +11,7 @@
 
 * nodemon可执行express的服务,express提供static和api服务
 * nodemon能监视目录下的所有文件，去除static文件的（webapp、src_webapp），其他都会监听，有变化就会重新启动我的express的服务。
-* nodemon启动的服务有API和static
+* nodemon启动的服务有API和static，就是提供了所有的服务；
 
 ```
 var nodemon = require('gulp-nodemon');
@@ -39,7 +39,8 @@ nodemon({
   });
 ```
 
-* browserSync代理服务器，提供reload进行重启功能。
+* browserSync代理服务器，提供reload进行重启功能。代理服务可以访问所有的API和static；
+* 前端不需要配置跨域模式了；
 
 ### 总结
 

@@ -72,17 +72,21 @@ else if (process.env.NODE_ENV == 'git') {
 
 
   tool
-  // 导出数据库
-    ._cmd(`mongodump -h 127.0.0.1:27017 -d ${conf.db} -o ${_path}`)
+    ._cmd(`git add ${_url}`)
+    // 导出数据库
+    // ._cmd(`mongodump -h 127.0.0.1:27017 -d ${conf.db} -o ${_path}`)
     // 
-    .then(function() {
-      return tool._cmd(`git add ${_url}`);
-    })
+    // .then(function() {
+    //   return tool._cmd(`git add ${_url}`);
+    // })
     .then(function() {
       return tool._cmd(`git commit -m "date:${tool._date(timestamp)}"`);
     })
     .then(function() {
-      return tool._cmd(`git push -u ${origin} master`)
+      return tool._cmd(`git push -u origin master`)
+    })
+    .then(function() {
+      return tool._cmd(`git push -u name master`)
     })
     .then(function() {
       console.log('上传git完成');
