@@ -1,34 +1,80 @@
 'use strict';
-var one = './src_webapp/demo_test/';
+var one = './src_webapp/modules/js_demo/';
 
 
 
 
 
+
+
+
+
+
+
+
+// 生成文件的配置
+var opts = {
+  // 真是的工作目录，
+  dist: 'webapp',
+  // 要src的文件夹名字
+  src: 'src_webapp',
+  // 编译一个功能模块路径
+  one: one,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 开发环境key
+var env = process.env.NODE_ENV;
 
 var path = require('path');
 var gulp = require('gulp');
 var fs = require('fs-extra');
 
+// 全局配置
+var conf = require('./conf.js');
 
+// ------------------------------------------------服务器及文件编译
 // 服务器
 var browserSync = require('browser-sync').create();
 var reload = browserSync.reload;
 
 // html
 var htmlmin = require('gulp-htmlmin');
+
 // JS
-var uglify = require('gulp-uglify');
+const uglify = require('gulp-uglifyes');
 var babel = require('gulp-babel');
+// 取消严格模式
+var removeUseStrict = require("gulp-remove-use-strict");
+
 // css
 var cssnano = require('gulp-cssnano');
 var less = require('gulp-less');
 var autoprefixer = require('gulp-autoprefixer');
+
 // img
-var imagemin = require('gulp-imagemin'), // 图片压缩
-  pngquant = require('imagemin-pngquant'); // 深度压缩 
+var imagemin = require('gulp-imagemin'); // 图片压缩
+var pngquant = require('imagemin-pngquant'); // 深度压缩 
 
 
+
+// -----------------------------------------------------错误插件
 // 错误阻止
 var plumber = require('gulp-plumber');
 // 重命名插件
@@ -39,22 +85,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var changed = require('gulp-changed');
 
 
-// 开发环境key
-var env = process.env.NODE_ENV;
-
-
-// 生成文件的配置
-var opts = {
-  // 真是的工作目录，
-  // dist: './../../../../../../../047-company_eclipse/workspace/cors-mot/src/main/webapp/',
-  dist: 'webapp',
-  // 要src的文件夹名字
-  src: 'src_webapp',
-  // 编译一个功能模块路径
-  one: one,
-};
-
-
+// -----------------------------------------------------路径解析
 var arr = opts.one.split('/');
 arr.forEach(function(ele, index) {
   if (ele == opts.src) {
@@ -65,21 +96,40 @@ arr.forEach(function(ele, index) {
 opts.one_dist = arr.join('/');
 
 
-// 测试服务配置
-var server_opts = {
-  notify: false,
-  server: path.resolve(__dirname, opts.dist),
-  index: './index.html',
-  port: 1010,
-  logConnections: true
-};
 
+var server_opts = null
+  // 静态服务器 + 监听 html,css 文件
+gulp.task('server', function() {
 
-var index = 0;
-// 静态服务器 + 监听 html,css 文件
-gulp.task('serve', ['html', 'less', 'js', 'images'], function() {
-  // 开服务
+  switch (env) {
+    case "web_proxy":
+      // 前后端开发模式
+      server_opts = {
+        // 被代理的后台API端口
+        proxy: 'http://localhost:' + conf.api_port,
+
+        browser: 'chrome',
+        notify: false,
+
+        // gulp 前端的端口
+        port: conf.dev_port
+      };
+      break;
+    case "web_only":
+      // 前端开发模式
+      server_opts = {
+        notify: false,
+        server: path.resolve(__dirname, opts.dist),
+        index: './index.html',
+        port: conf.dev_port,
+        logConnections: true
+      };
+      break;
+  }
+  // 启动代理服务器。
   browserSync.init(server_opts);
+
+
   // 监听 html
   gulp.watch(path.join(opts.one, '*.html'), ['html']);
   // 监听 less
@@ -89,6 +139,9 @@ gulp.task('serve', ['html', 'less', 'js', 'images'], function() {
   // 监听 js
   gulp.watch(path.join(opts.one, '*.js'), ['js']);
 });
+
+
+
 
 // html
 gulp.task('html', function() {
@@ -123,6 +176,8 @@ gulp.task('html', function() {
 
 // less编译后的css将注入到浏览器里实现更新
 gulp.task('less', function() {
+  // gulp.src(path.join(opts.one, '*.less'))
+  //   .pipe(gulp.dest(opts.one_dist));
   return (
     gulp.src(path.join(opts.one, '*.less'))
     .pipe(plumber())
@@ -136,6 +191,7 @@ gulp.task('less', function() {
     .pipe(reload({
       stream: true
     })));
+
 });
 
 // 图片压缩
@@ -170,11 +226,16 @@ gulp.task('js', function() {
     // .pipe(rename({
     //   suffix: '.min'
     // }))
+
     // 转语法
-    .pipe(babel({
-      presets: ['es2015']
-    }))
-    // 保留部分注释
+    // .pipe(babel({
+    //   presets: [
+    //     'es2015',
+    //   ]
+    // }))
+    // 去除严格，这个不管用
+    // .pipe(removeUseStrict())
+    // 压缩
     .pipe(uglify())
     // 输出路径
     .pipe(gulp.dest(opts.one_dist))
@@ -184,6 +245,22 @@ gulp.task('js', function() {
 });
 
 
-gulp.task('default', ['serve'], function() {
+gulp.task('default', ['server'], function() {
   gulp.start(['html', 'less', 'js', 'images']);
 });
+
+
+
+
+
+
+
+// gulp.task('default', function() {
+//   browserSync.init(server_opts);
+// });
+
+
+// gulp.watch('./' + opts.dist + '/**/*')
+//   .on('change', function(event) {
+//     browserSync.reload();
+//   });
