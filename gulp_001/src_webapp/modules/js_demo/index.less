@@ -1,0 +1,52 @@
+* {
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
+  transition: all 0.3s ease-in;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Microsoft Yahei';
+  overflow: hidden;
+}
+
+.app{
+	width: 100%;
+  height: 100%;
+  background-color: #123;
+  position: relative;
+  box-sizing: border-box;
+  padding-bottom: 100px;
+}
+.app>.demo{
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-weight: 800;
+}
+
+.app>.demo:after {
+  display: inline-block;
+  width: 0;
+  height: 100%;
+  vertical-align: middle;
+  content: "";
+}
+
+
+.app>.info{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  line-height: 100px;
+  background-color: rgba(255,255,255,0.3);
+  font-weight: 800;
+  text-align: center;
+  color: #fff;
+  font-size: 50px;
+}
