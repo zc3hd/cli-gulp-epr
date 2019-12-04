@@ -1,91 +1,127 @@
+# gulp-02
 
-# step 2
+## 数据库操作
 
-### gulp+express
+* 涉及到后台数据库开发：
+  * 开发一：
+    * 后台测试阶段 api_ proxy
+    * 中间没有开发完成，下载 **本地数据库** 到 **文件目录数据库**
+    * 上传 github；
+  * 开发二：
+    * 下载github代码
+    * 上传 **文件目录数据库** 到 **本地数据库**
+    * 后台测试阶段 api_ proxy
+  * 全部开发完成：
+    * github：上传
+    * 线上服务器：
+      * 上传 **本地数据库** 到 **线上**
+      * 上传 前后端代码 到 线上；
+* 突然发现，一切对数据库本地与线上的操作并无卵用；线上大部分情况也不需要测试数据；
 
-* 这个版本适合前端使用gulp进行监听文件变化，后台用node提供API和static。一人开发。
-* 监听express服务：nodemon
-* 启动后台服务后，用browserSync代理express启动的服务，参与gulp编码后的浏览器的reload
-
-##### 1.npm run api
-
-* nodemon可执行express的服务,express提供static和api服务
-* nodemon能监视目录下的所有文件，去除static文件的（webapp、src_webapp），其他都会监听，有变化就会重新启动我的express的服务。
-* nodemon启动的服务有API和static，就是提供了所有的服务；
-
-```
-var nodemon = require('gulp-nodemon');
-nodemon({
-    script: './api_server/app.js',
-    ignore : [
-      "./src_webapp/",
-      "./webapp/",
-    ],
-    env: { 'NODE_ENV': 'development'}  
-  });
-```
-
-##### 2.gulp第2个任务
-
-* 在1011端口启动真实的后台API和static，代理端口为1010
-
-```
-  browserSync.init({
-    proxy: 'http://localhost:1011',
-    browser: 'chrome',
-    notify: false,
-    //这个是browserSync对http://localhost:1011实现的代理端口
-    port: 1010
-  });
-```
-
-* browserSync代理服务器，提供reload进行重启功能。代理服务可以访问所有的API和static；
-* 前端不需要配置跨域模式了；
-
-### 总结
-
-* 服务器：启动express的服务,express提供static和api服务
-* nodemon（配置排除webapp和src_webapp），就是监听后台的代码，重启。
-* browserSync拿到服务器的reload，成为代理服务器。
-* gulp监听src_webapp，让browserSync可reload
-
-### 其他
-
-* browserSync：可拿到JAVA启动的服务的reload，成为代理服务器。
-* gulp监听前端代码，使browserSync代理服务器可执行reload。
-* 不用后台JAVA写专门的代码配置跨域。
-* 若后台的服务只是自己启动，不想通过nodemon进行，不想后台的代码被nodemon监听和重启。gulpfile.js应该把[node关闭]，在CMD单独执行 node 服务。
-
----------------------------
-
-* 全局配置：
-```
-module.exports = {
-  // 数据库名称
-  db:"test",
-
-  // 测试模式下的端口
-  dev_port:1011,
-
-  // 打包后/测试时被代理的端口
-  api_port:1010,
-}
-```
-
-----------------------------
-
-* 下面这样写是不对，因为node ./api_server/app.js就是开启服务了，不会执行完成的。除非断开。同样gulp也是开启一个服务，不会执行完成的。所以不能这样写，还是各开启个的CMD吧
-```
+```json
   "scripts": {
-    "dev": "cross-env NODE_ENV=dev node ./api_server/app.js && gulp",
+    "web_proxy": "set NODE_ENV=web_proxy&&gulp",
+    "web_only": "set NODE_ENV=web_only&& gulp",
+    "api_proxy": "node ./api_server/app_auto.js",
+    "api_only": "node ./api_server/app.js",
+      
+    // 上传 本地数据库 到 线上
+    //"esc_db": "set NODE_ENV=esc_db&&node ./cmd.js",
+      
+    // 下载 本地数据库 到 文件夹
+    //"db_dn": "set NODE_ENV=db_dn&&node ./cmd.js",
+     
+    // 上传 文件夹 到 本地数据库
+    //"db_up": "set NODE_ENV=db_up&&node ./cmd.js",
+      
+    "git": "set NODE_ENV=git&&node ./cmd.js"
   },
 ```
 
---------------------------------------
+## 用法3
 
-#### 2019.1.4优化：
+- 命令：
+  - `npm run web_proxy`
+  - `npm run api_proxy`
+- 执行核心：
+  - 前端开启编译模式，需要涉及后台API的请求；
+  - 后台的API服务：是由我们前端工程师写的node服务；后台也处于dev阶段；
+- 适用场景：**后台node服务，我们自己同时开发**；
 
+```js
+var nodemon = require('gulp-nodemon');
+var path = require('path');
+nodemon({
+    // 服务入口
+    script: path.join(__dirname, './app.js'),
+    // 忽略哪些文件
+    ignore: [
+        path.join(__dirname, '../src_webapp/'),
+        path.join(__dirname, '../webapp/'),
+        path.join(__dirname, '../gulpfile.js'),
+        path.join(__dirname, '../conf.js'),
+    ],
+    env: { 'NODE_ENV': 'development' }
+});
 ```
-1.把后台的监控和前端的监控分开，形成npm run api/npm run dev
-2.因为gulp负责监听src_webpack文件从而使browserSync代理的页面进行reload。那么npm run dev就没有启动自己的static服务器。所以gulp这个template另外需要判断测试接口有没有通，然后决定启动代理服务器还是自己的静态服务器；
+
+## 用法4
+
+- 命令：`npm run api_only`
+- 执行核心：
+  - 前后端全部完成，看最终服务开启后效果；
+- 适用场景：**前后端独立完成，最终开启服务**；
+
+```js
+var express = require('express');
+var path = require('path');
+var conf = require('../conf.js');
+
+// 开启app
+var app = express();
+
+
+// 测试API
+// app.post('/api/js_demo/font.do', function(req, res) {
+//   var size = Math.floor(Math.random() * 200);
+//   if (size < 60) {
+//     size = 60;
+//   }
+//   var color = Math.floor(Math.random() * 1000000);
+
+//   res.send({
+//     size: size,
+//     color: color,
+//   });
+// });
+
+
+// -------------------------------------------------连接服务器
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/' + conf.db);
+// 链接数据库
+mongoose.connection.once('open', function() {
+  console.log('数据库已连接');
+});
+
+// -------------------------------------------------处理post中间件
+var bodyParser = require('body-parser');
+// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+
+// ------------------------------------------------API模块
+var JS_demo = require('./moudles/js_demo/index.js');
+new JS_demo(app).init();
+
+
+// -----------------------------------------------静态资源服务器
+app.use(express.static(path.join(__dirname, '../webapp/')));
+
+
+app.listen(conf.api_port);
+console.log("API服务 启动在 端口:" + conf.api_port);
 ```
+
+
+

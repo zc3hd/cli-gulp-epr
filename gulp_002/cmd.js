@@ -59,7 +59,7 @@ else if (process.env.NODE_ENV == 'db_up') {
 // =================================一键上传文件到github
 else if (process.env.NODE_ENV == 'git') {
   // 获取当前时间戳
-  var timestamp = Date.parse(new Date());
+  var timestamp = Date.now();
 
   // 要提交的目录
   var _url = path.join(__dirname, './');
@@ -76,9 +76,9 @@ else if (process.env.NODE_ENV == 'git') {
     // 导出数据库
     // ._cmd(`mongodump -h 127.0.0.1:27017 -d ${conf.db} -o ${_path}`)
     // 
-    // .then(function() {
-    //   return tool._cmd(`git add ${_url}`);
-    // })
+    .then(function() {
+      return tool._cmd(`git add ${_url}`);
+    })
     .then(function() {
       return tool._cmd(`git commit -m "date:${tool._date(timestamp)}"`);
     })

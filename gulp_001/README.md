@@ -31,7 +31,7 @@
   * webapp打包编译后的目录，该目录结构必须与 src_webapp目录结构保持一致，否则会有文件引用路径错误，所以需要把src_webapp内的文件及结构复制一份到webapp目录下；
   * 然后删除 webapp/modules/ 目录下的所有文件；
 
-## 1.package.json
+## package.json
 
 ```json
   "scripts": {
@@ -42,7 +42,7 @@
   },
 ```
 
-## 2.用法1
+## 用法1
 
 * 命令：`npm run web_only`
 
@@ -74,7 +74,7 @@ switch (env) {
 browserSync.init(server_opts);
 ```
 
-## 3.用法2
+## 用法2
 
 * 命令：`npm run web_proxy`
 
@@ -107,68 +107,5 @@ switch (env) {
 }
 // 启动代理服务器。
 browserSync.init(server_opts);
-```
-
-## 4.用法3
-
-* 命令：
-  * `npm run web_proxy`
-  * `npm run api_proxy`
-* 执行核心：
-  * 前端开启编译模式，需要涉及后台API的请求；
-  * 后台的API服务：是由我们前端工程师写的node服务；后台也处于dev阶段；
-* 适用场景：**后台node服务，我们自己同时开发**；
-
-```js
-var nodemon = require('gulp-nodemon');
-var path = require('path');
-nodemon({
-    // 服务入口
-    script: path.join(__dirname, './app.js'),
-    // 忽略哪些文件
-    ignore: [
-        path.join(__dirname, '../src_webapp/'),
-        path.join(__dirname, '../webapp/'),
-        path.join(__dirname, '../gulpfile.js'),
-        path.join(__dirname, '../conf.js'),
-    ],
-    env: { 'NODE_ENV': 'development' }
-});
-```
-
-## 5.用法4
-
-* 命令：`npm run api_only`
-* 执行核心：
-  * 前后端全部完成，看最终服务开启后效果；
-* 适用场景：**前后端独立完成，最终开启服务**；
-
-```js
-var express = require('express');
-var path = require('path');
-var conf = require('../conf.js');
-
-var app = express();
-
-// 静态资源服务器
-app.use(express.static(path.join(__dirname, '../webapp/')));
-
-
-// 测试API
-app.post('/api/js_demo/font.do', function(req, res) {
-  var size = Math.floor(Math.random() * 200);
-  if (size < 60) {
-    size = 60;
-  }
-  var color = Math.floor(Math.random() * 1000000);
-  res.send({
-    size: size,
-    color: color,
-  });
-});
-
-// 端口
-app.listen(conf.api_port);
-console.log("server running at " + conf.api_port);
 ```
 
