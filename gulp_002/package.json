@@ -7,8 +7,7 @@
     "web_proxy": "set NODE_ENV=web_proxy&&gulp",
     "web_only": "set NODE_ENV=web_only&& gulp",
     "api_proxy": "node ./api_server/app_auto.js",
-    "api_only": "node ./api_server/app.js",
-    "git": "set NODE_ENV=git&&node ./cmd.js"
+    "api_only": "node ./api_server/app.js"
   },
   "author": "cc",
   "license": "ISC",
@@ -22,7 +21,7 @@
     "babel-preset-stage-3": "^6.24.1",
     "browser-sync": "^2.17.5",
     "cross-env": "^3.0.0",
-    "express": "^4.16.4",
+    "fs-extra": "^8.1.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-babel": "^7.0.1",
@@ -41,9 +40,8 @@
     "imagemin-pngquant": "^5.1.0"
   },
   "dependencies": {
-    "bluebird": "^3.5.0",
     "body-parser": "^1.14.0",
-    "fs-extra": "^2.1.2",
+    "express": "^4.16.4",
     "mongoose": "^5.3.13"
   }
 }
