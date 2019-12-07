@@ -3,6 +3,6 @@
  */
 (function(win, $) {
   var conf = win.conf = win.conf || {
-    build:false,
+    build: false,
   };
 })(window, jQuery);
