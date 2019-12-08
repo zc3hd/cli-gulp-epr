@@ -4,10 +4,11 @@
   "description": "gulp",
   "main": "index.js",
   "scripts": {
-    "web_proxy": "set NODE_ENV=web_proxy&&gulp",
+    "web_proxy": "set NODE_ENV=web_proxy&& gulp",
     "web_only": "set NODE_ENV=web_only&& gulp",
-    "api_proxy": "node ./api_server/app_auto.js",
-    "api_only": "node ./api_server/app.js"
+    "api_proxy": "set NODE_ENV=api_simple&& node ./api_server/app_auto.js",
+    "api_only": "set NODE_ENV=api_only&& node ./api_server/app_auto.js",
+    "all": "node ./api_server/app.js"
   },
   "author": "cc",
   "license": "ISC",
@@ -34,6 +35,7 @@
     "gulp-uglifyes": "^0.2.1"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "mongoose": "^5.3.13"
   }
 }

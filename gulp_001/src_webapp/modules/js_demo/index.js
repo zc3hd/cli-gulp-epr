@@ -1,9 +1,12 @@
-// 
-function App() {
+// import './index.less';
 
+
+function App() {
+  // body... 
 }
 App.prototype = {
   init: function() {
+    // var me = this;
     $.ajax({
         url: "/api/js_demo/font.do",
         dataType: "json",
@@ -18,18 +21,18 @@ App.prototype = {
         // var color = Math.floor(Math.random() * 1000000);
         // *********************************************测试数据
 
+        // CSS设置
         $('#demo').css({
           fontSize: data.size + "px",
           color: '#' + data.color
         });
+        // 显示信息
+        $('#info').html(`fontSize:${data.size}px; color:#${data.color}`);
 
         // 
-        $('#info').html(`fontSize:${data.size}px;color:#${data.color}`);
-
-
-        setTimeout(function() {
+        setTimeout(function(argument) {
           this.init();
-        }.bind(this), 1000);
+        }.bind(this), 60000);
 
       }.bind(this));
 
@@ -37,12 +40,5 @@ App.prototype = {
   },
 };
 
+
 new App().init();
-
-
-// -------------------测试；
-var a = 2;
-var fn = () => {
-  console.log(1);
-}
-console.log(c);

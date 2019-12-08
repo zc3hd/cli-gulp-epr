@@ -6,16 +6,8 @@ function JS_demo(app) {
   // 路由
   me.router = require('express').Router();
 
-  // 模型
-  me.js_demo_model = require('../../collection/js_model.js');
-
-  // 工具包
-  var tool = require('../../../tool.js');
-  me.tool = new tool();
-
-  // 
-
-
+  // 数据库模型
+  me.js_demo_model = require('../collection/js_model.js');
 
 }
 JS_demo.prototype = {
@@ -48,7 +40,7 @@ JS_demo.prototype = {
       .create({
         size: size,
         color: color,
-        time: me.tool._date(Date.now())
+        time: Date.now()
       })
       // 返回
       .then(function(data) {

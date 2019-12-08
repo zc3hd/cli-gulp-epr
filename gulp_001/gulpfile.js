@@ -1,3 +1,14 @@
+// 配置
+var conf = {
+  // 前端测试模式下的端口
+  dev_port: 1010,
+
+  // 后台 打包后/测试时 被代理的端口
+  api_port: 1011,
+};
+
+
+
 // 需求：
 // 1.形成配置项; 
 //    src ：监听哪个目录下的文件；
@@ -15,16 +26,11 @@ var opts = {
 
 
 // 2.选择开发模式，不一样的模式，采用不同的服务器；
-
-
-// 开发环境key
-var env = process.env.NODE_ENV;
 var path = require('path');
 var gulp = require('gulp');
 var fs = require('fs-extra');
 
-// 全局配置
-var conf = require('./conf.js');
+
 
 // ------------------------------------------------服务器及文件编译
 // 服务器
@@ -59,6 +65,8 @@ var changed = require('gulp-changed');
 
 
 var server_opts;
+// 开发环境key
+var env = process.env.NODE_ENV;
 gulp.task('server', function() {
 
   switch (env) {
@@ -72,6 +80,7 @@ gulp.task('server', function() {
         // gulp 前端服务的的端口
         port: conf.dev_port
       };
+      console.log("与后台联调模式 开启");
       break;
     case "web_only":
       // 前端开发模式
@@ -82,6 +91,7 @@ gulp.task('server', function() {
         port: conf.dev_port,
         logConnections: true
       };
+      console.log("前端开发 热开启");
       break;
   }
   // 启动服务器
