@@ -290,19 +290,6 @@ Tool.prototype = {
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 gulp.task('default', ['server'], function() {
   // gulp.start(['html', 'less', 'js', 'images']);
 });

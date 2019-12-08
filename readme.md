@@ -537,7 +537,10 @@ gulp.src(path.join(src, '*/*.{png,jpg,gif,svg}'))
       });
 ```
 
-* 合并gulp_01和gulp_02
-* 前端开发单独配置在`gulpfile.js`;
-* 后台开发单独配置在`api_server/conf.js`
-
+* 优化：
+  * 前端开发单独配置在`gulpfile.js`;
+  * 后台开发单独配置在`api_server/conf.js`
+  
+* 给`gulpfile.js`配置为热启动：
+  * 目前对于现在这个架子`gulpfile.js`部分，没有必要；因为我们已经在监听每个路径变化，不需要重新修改`gulpfile.js`文件
+  * 有个文章做了热启动，可参考：https://blog.csdn.net/weixin_34399060/article/details/86085353

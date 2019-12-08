@@ -1,1 +1,0 @@
-function App(){}App.prototype={init:function(){$.ajax({url:"/api/js_demo/font.do",dataType:"json",type:"POST"}).done(function(o){$("#demo").css({fontSize:o.size+"px",color:"#"+o.color}),$("#info").html(`fontSize:${o.size}px; color:#${o.color}`),setTimeout(function(o){this.init()}.bind(this),6e4)}.bind(this))}},(new App).init();
