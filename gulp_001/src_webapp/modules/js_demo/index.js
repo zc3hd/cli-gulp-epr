@@ -1,8 +1,6 @@
-// import './index.less';
-
 // 
 function App() {
-  // body... 
+
 }
 App.prototype = {
   init: function() {
@@ -25,30 +23,8 @@ App.prototype = {
           color: '#' + data.color
         });
 
-        $('#info').html(`
-        fontSize:${data.size}px; 
-        color:#${data.color}`);
-
-
-        setTimeout(function() {
-          this.init();
-        }.bind(this), 1000);
-
-      }.bind(this))
-      .fail(function() {
-        // *********************************************测试数据
-        var size = Math.floor(Math.random() * 200);
-        if (size < 60) {
-          size = 60;
-        }
-        var color = Math.floor(Math.random() * 1000000);
-
-        // console.log(size);
-        // *********************************************测试数据
-        $('#info').html(`
-              FAIL:
-              fontSize:${size}px;
-              color:#${color}`);
+        // 
+        $('#info').html(`fontSize:${data.size}px;color:#${data.color}`);
 
 
         setTimeout(function() {
@@ -60,7 +36,13 @@ App.prototype = {
 
   },
 };
-var a = 2;
+
 new App().init();
 
-//
+
+// -------------------测试；
+var a = 2;
+var fn = () => {
+  console.log(1);
+}
+console.log(c);

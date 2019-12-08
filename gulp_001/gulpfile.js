@@ -1,4 +1,3 @@
-'use strict';
 // 需求：
 // 1.形成配置项; 
 //    src ：监听哪个目录下的文件；
@@ -22,7 +21,6 @@ var opts = {
 var env = process.env.NODE_ENV;
 var path = require('path');
 var gulp = require('gulp');
-// fs-extra
 var fs = require('fs-extra');
 
 // 全局配置
@@ -36,19 +34,18 @@ var reload = browserSync.reload;
 // ------------------------------------html
 var htmlmin = require('gulp-htmlmin');
 // ------------------------------------JS
-const uglify = require('gulp-uglifyes');
+var uglify = require('gulp-uglify');
 var babel = require('gulp-babel');
-// 取消严格模式
-var removeUseStrict = require("gulp-remove-use-strict");
+
 // ------------------------------------css
-var cssnano = require('gulp-cssnano');
+// less 
 var less = require('gulp-less');
+var cssnano = require('gulp-cssnano');
 var autoprefixer = require('gulp-autoprefixer');
+
 // ------------------------------------img
 // 图片压缩
 var imagemin = require('gulp-imagemin');
-// 深度压缩 
-var pngquant = require('imagemin-pngquant');
 
 // -----------------------------------其他插件
 // 错误阻止
@@ -93,7 +90,7 @@ gulp.task('server', function() {
   // 实例化工具包
   var tool = new Tool();
 
-  // 复制
+  // 复制 libs
   tool._copy(
     path.resolve(__dirname, opts.src, opts.copy),
     path.resolve(__dirname, opts.dist, opts.copy),
@@ -101,14 +98,20 @@ gulp.task('server', function() {
       console.log(`${opts.src}/${opts.copy}所有文件复制成功`);
     });
 
-  // 删除和修改
+  // 删除和修改 modules
   gulp
-    .watch(
-      path.resolve(__dirname, opts.src, '**/*.*'),
+    .watch(path.resolve(__dirname, opts.src, '**/*.*'),
       function(info) {
+
+        // 操作了 libs内 文件；
+        if (info.path.indexOf(opts.copy) != -1) {
+          return;
+        }
+
+        // 文件操作 类型
         switch (info.type) {
           case "deleted":
-            // tool._del(info.path);
+            tool._del(info.path);
             break;
           case "changed":
             tool._compile(info.path);
@@ -124,10 +127,7 @@ function Tool() {}
 Tool.prototype = {
   // 
   _compile: function(info) {
-    // 保存了libs的文件
-    if (info.indexOf(opts.copy) != -1) {
-      return;
-    }
+
     // 
     // 后缀
     switch (path.extname(info)) {
@@ -174,40 +174,40 @@ Tool.prototype = {
   _less: function(info) {
     gulp.src(info)
       .pipe(plumber())
+      // 转化
       .pipe(less())
+      // 压缩
       .pipe(cssnano())
+      // 加前缀
       .pipe(autoprefixer({
-        browsers: ['last 2 versions', '>5%', 'Firefox >= 20', 'Chrome >=40'],
+        browsers: [
+          'last 2 versions',
+          '>1%',
+          'Firefox >= 20',
+          'Chrome >=40'
+        ],
         cascade: false
       }))
+      // 
       .pipe(gulp.dest(this._dist(info)))
-      .pipe(reload({
-        stream: true
-      }));
+      .pipe(reload({ stream: true }));
   },
   _js: function(info) {
-    gulp.src(info)
+    gulp
+      .src(info)
       .pipe(plumber())
-      // 重命名
-      // .pipe(rename({
-      //   suffix: '.min'
-      // }))
-
-    // 转语法
-    // .pipe(babel({
-    //   presets: [
-    //     'es2015',
-    //   ]
-    // }))
-    // 去除严格，这个不管用
-    // .pipe(removeUseStrict())
-    // 压缩
-    .pipe(uglify())
-      // 输出路径
+      // 初始 调试map
+      .pipe(sourcemaps.init())
+      // 转 es2015 语法
+      .pipe(babel({ presets: ['@babel/env'] }))
+      // 不认识es6，压缩会报错；
+      .pipe(uglify())
+      // 写入 调试map
+      .pipe(sourcemaps.write())
+      // .pipe(rename({ suffix: '.min' })) //  重命名suffix：后缀
+      // 生成目录
       .pipe(gulp.dest(this._dist(info)))
-      .pipe(reload({
-        stream: true
-      }));
+      .pipe(reload({ stream: true }));
 
   },
   _pic: function(info) {
@@ -218,16 +218,18 @@ Tool.prototype = {
       .pipe(plumber())
       // 对比文件是否有过改动（此处填写的路径和输出路径保持一致）
       .pipe(changed(dist))
-      .pipe(imagemin({
-        // 无损压缩JPG图片
-        progressive: true,
-        // 不移除svg的viewbox属性
-        svgoPlugins: [{
-          removeViewBox: false
-        }],
-        // 使用pngquant插件进行深度压缩
-        use: [pngquant()]
-      }))
+      .pipe(imagemin([
+        // 图片的渐进式加载
+        imagemin.gifsicle({ interlaced: true }),
+        imagemin.jpegtran({ progressive: true }),
+        imagemin.optipng({ optimizationLevel: 5 }),
+        imagemin.svgo({
+          plugins: [
+            { removeViewBox: true },
+            { cleanupIDs: false }
+          ]
+        })
+      ]))
       // 输出路径
       .pipe(gulp.dest(dist))
       .pipe(reload({
@@ -246,6 +248,16 @@ Tool.prototype = {
 
       });
   },
+  // 
+  _del: function(info) {
+    var dist = info.replace(opts.src, opts.dist);
+    fs
+      .remove(dist)
+      .then(function() {
+        console.log(dist + " 删除成功");
+      });
+  },
+
   // _dist文件目录获取
   _dist: function(info) {
 
@@ -255,7 +267,7 @@ Tool.prototype = {
       .replace(opts.src, opts.dist)
       .split(path.sep);
 
-    // 删除最后
+    // 删除最后成员
     info.pop();
 
     // 合并

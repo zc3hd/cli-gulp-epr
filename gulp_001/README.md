@@ -42,9 +42,28 @@
   },
 ```
 
-## 用法1
 
-* 命令：`npm run web_only`
+
+## 基础用法
+
+```js
+// 1.形成配置项; 
+//    src ：监听哪个目录下的文件；
+//    dist: 打包的目录名称
+//    libs：依赖文件的目录名称，需要复制
+var opts = {
+    // 监听哪个目录下的文件；
+    src: 'src_webapp',
+    // 依赖文件的目录名称，需要复制
+    copy: "scripts",
+    // 打包的目录名称
+    dist: 'webapp',
+};
+```
+
+
+
+## npm run web_only
 
 * 内部执行核心：只是前端开启编译模式，不涉及后台API的请求；
 * 适用场景：**页面功能HTML+CSS+JS 页面功能演示**
@@ -74,9 +93,8 @@ switch (env) {
 browserSync.init(server_opts);
 ```
 
-## 用法2
+## npm run web_proxy
 
-* 命令：`npm run web_proxy`
 * 内部执行核心：
   * 前端开启编译模式，需要涉及后台API的请求；
   * **此时后台的API端口被代理，任何后台都可以；**
@@ -110,6 +128,10 @@ switch (env) {
 browserSync.init(server_opts);
 ```
 
+
+
+
+
 ## upd
 
 ### 2019-12-08 
@@ -123,4 +145,83 @@ browserSync.init(server_opts);
   * `gulp.watch(src) `监听`src`目录下哪个文件路径变化，就获取到相应的文件路径，然后做对应的编译；
   * 把所有的编译功能集中在面向对象上；
   * 项目用到的公共文件，开启服务后自动复制一份；
+
+### 2019-12-09
+
+* JS新增 `sourcemaps`：
+
+```js
+gulp
+      .src(info)
+      .pipe(plumber())
+
+      // 初始 调试map
+      .pipe(sourcemaps.init())
+      // 转 es2015 语法
+      .pipe(babel({ presets: ['@babel/env'] }))
+      // 不认识es6，压缩会报错；
+      .pipe(uglify())
+      // 写入 调试map
+      .pipe(sourcemaps.write())
+
+      // .pipe(rename({ suffix: '.min' })) //  重命名suffix：后缀
+      // 生成目录
+      .pipe(gulp.dest(this._dist(info)))
+      .pipe(reload({ stream: true }));
+```
+
+* 图片压缩配置：
+
+```js
+// ------------------------------------img
+// 图片压缩
+var imagemin = require('gulp-imagemin');
+
+gulp.src(path.join(src, '*/*.{png,jpg,gif,svg}'))
+      .pipe(plumber())
+      // 对比文件是否有过改动（此处填写的路径和输出路径保持一致）
+      .pipe(changed(dist))
+      .pipe(imagemin([
+        // 图片的渐进式加载
+        imagemin.gifsicle({ interlaced: true }),
+        imagemin.jpegtran({ progressive: true }),
+        imagemin.optipng({ optimizationLevel: 5 }),
+        imagemin.svgo({
+          plugins: [
+            { removeViewBox: true },
+            { cleanupIDs: false }
+          ]
+        })
+      ]))
+      // 输出路径
+      .pipe(gulp.dest(dist))
+      .pipe(reload({
+        stream: true
+      }));
+```
+
+* gulp.watch()只能监听 修改和删除，优化删除功能；
+
+```js
+// 删除和修改 modules
+  gulp
+    .watch(path.resolve(__dirname, opts.src, '**/*.*'),
+      function(info) {
+
+        // 操作了 libs内 文件；
+        if (info.path.indexOf(opts.copy) != -1) {
+          return;
+        }
+
+        // 文件操作 类型
+        switch (info.type) {
+          case "deleted":
+            tool._del(info.path);
+            break;
+          case "changed":
+            tool._compile(info.path);
+            break;
+        }
+      });
+```
 

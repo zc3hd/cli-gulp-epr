@@ -38,7 +38,7 @@
   },
 ```
 
-## 用法3
+## cli 用法3
 
 - 命令：
   - `npm run web_proxy`
@@ -65,7 +65,7 @@ nodemon({
 });
 ```
 
-## 用法4
+## cli 用法4
 
 - 命令：`npm run api_only`
 - 执行核心：
