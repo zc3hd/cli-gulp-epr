@@ -3,7 +3,7 @@ var conf = {
   // 前端测试模式下的端口
   dev_port: 1010,
 
-  // 后台 打包后/测试时 被代理的端口
+  // 本地后台1011 打包后/测试时 被代理的端口
   api_port: 1011,
 };
 
@@ -76,11 +76,12 @@ gulp.task('server', function() {
         // 被代理的后台API端口
         proxy: 'http://localhost:' + conf.api_port,
         browser: 'chrome',
+        index: './index.html',
         notify: false,
         // gulp 前端服务的的端口
         port: conf.dev_port
       };
-      console.log("与后台联调模式 开启");
+      console.log(`与后台port${conf.api_port}联调模式 开启`);
       break;
     case "web_only":
       // 前端开发模式
@@ -108,12 +109,12 @@ gulp.task('server', function() {
       console.log(`${opts.src}/${opts.copy}所有文件复制成功`);
     });
 
-  // 删除和修改 modules
+  // 能监听到文件的删除和修改 
   gulp
     .watch(path.resolve(__dirname, opts.src, '**/*.*'),
       function(info) {
 
-        // 操作了 libs内 文件；
+        // 若操作：libs内文件；直接返回；
         if (info.path.indexOf(opts.copy) != -1) {
           return;
         }
