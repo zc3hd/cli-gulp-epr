@@ -3,7 +3,7 @@ var path = require('path');
 var conf = require('./conf.js');
 
 var app = express();
-app.use(express.static(path.join(__dirname, '../webapp/')));
+app.use(express.static(path.join(__dirname, `../${conf.web_dist}/`)));
 
 
 // 端口

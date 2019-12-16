@@ -1,5 +1,6 @@
 var nodemon = require('gulp-nodemon');
 var path = require('path');
+var conf = require('./conf.js');
 
 var src;
 var env = process.env.NODE_ENV;
@@ -20,9 +21,9 @@ switch (env) {
 nodemon({
   script: src,
   ignore: [
-    path.join(__dirname, '../src_webapp/'),
-    path.join(__dirname, '../webapp/'),
-    path.join(__dirname, '../gulpfile.js'),
+    path.join(__dirname, `../${conf.web_src}/`),
+    path.join(__dirname, `../${conf.web_dist}/`),
+    path.join(__dirname, '../webpack.config.js'),
   ],
   env: { 'NODE_ENV': 'development' }
 });

@@ -28,7 +28,7 @@ new JS_demo(app).init();
 
 
 // -----------------------------------------------静态资源服务器
-app.use(express.static(path.join(__dirname, '../webapp/')));
+app.use(express.static(path.join(__dirname, `../${conf.web_dist}/`)));
 
 
 
