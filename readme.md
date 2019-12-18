@@ -62,6 +62,8 @@
 
 
 
+
+
 ## 前端：gulpfile.js 配置
 
 ```js
@@ -516,7 +518,7 @@ gulp.src(path.join(src, '*/*.{png,jpg,gif,svg}'))
       }));
 ```
 
-* `gulp.watch()`只能监听 修改和删除，优化删除功能；
+* `gulp.watch()`只能监听 修改和删除，不能监听新增；优化删除功能；
 
 ```js
 // 删除和修改 modules
@@ -554,4 +556,10 @@ gulp.src(path.join(src, '*/*.{png,jpg,gif,svg}'))
 ### 2019-12-09
 
 * 更名：`cli-gulp-epr`
+
+
+
+### 2019-12-18
+
+* .gitignore：新增` src_webapp`；因为保证以后所有用到 `cli-gulp-epr`的项目都是从github上直接更新，而不是本地拖拽，容易出错；
 
