@@ -23,7 +23,7 @@ nodemon({
   ignore: [
     path.join(__dirname, `../${conf.web_src}/`),
     path.join(__dirname, `../${conf.web_dist}/`),
-    path.join(__dirname, '../webpack.config.js'),
+    path.join(__dirname, '../gulpfile.js'),
   ],
   env: { 'NODE_ENV': 'development' }
 });
