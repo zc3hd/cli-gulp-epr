@@ -150,9 +150,22 @@ Tool.prototype = {
       case ".js":
         this._js(info);
         break;
+      default:
+        this._other(info);
+        break;
+
     }
     this._pic(info);
   },
+  _other: function(info) {
+    gulp.src(info)
+      .pipe(plumber())
+      .pipe(gulp.dest(this._dist(info)))
+      .pipe(reload({
+        stream: true
+      }));
+  },
+
   _html: function(info) {
     gulp.src(info)
       .pipe(plumber())
